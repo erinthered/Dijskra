@@ -24,6 +24,8 @@ int main(int argc, char **argv) {
 
   graphproject::Graph<int> graph;
   graph.BuildGraph( graph_file );
+  graph.PrintGraph();
+  cout << endl;
   graph.TopologicalSort();
 
   return 0;

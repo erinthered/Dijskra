@@ -49,8 +49,9 @@ private:
     Comparable label_;
 
     explicit Vertex( Comparable label ) : indegree_{ 0 }, top_sort_num_{ 0 },
-                    known_{ false }, dist_{ INF },
                     path_{ nullptr }, label_{ label } {}
+
+    inline void IncreaseIndegree() { ++indegree_; }
   };
 
   // Compare vertices functor for Dijkstra's Algorithm
@@ -68,17 +69,19 @@ private:
 
 public:
 
- // Function used for testing
- //  void PrintGraph();
+  // Function used for testing
+  // void PrintGraph();
 
   // Insert a Vertex in Graph
   // Comparable is the key, Vertex is the value
   // Returns true if new Vertex inserted, false if Vertex already in graph
   bool Insert( const Comparable& label );
 
-  // Insert connected vertex label and distance in adjacency list
-  // of current_index and return true, or return false if current_index
-  // is not in the graph or list_index is already in the adjacency list
+  // Add connected Vertex's label and edge weight to current_index's adjacency lists
+  // Insert the adjacent vertex if not already in graph
+  // Increase adjacent Vertex's indegree (used for TopologicalSort)
+  // If list_index is already in current_index's adjacency list or current_index
+  // is not in the graph, return false, else return true.
   bool InsertInAdjList( const Comparable& current_index,
             const Comparable& list_index, double dist );
 

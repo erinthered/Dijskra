@@ -11,15 +11,14 @@ Description:    Graph Class - Directed and Weighted Graph
 
 namespace graphproject {
 
-  // Function used for testing
-  //template <typename Comparable>
-/*  void Graph<Comparable>PrintGraph() {
-    for(auto & entry : vertices_) {
-      std::cout << entry.first << " ";
-      std::cout << std::endl;
-    }
-  }
-  */
+//  template <typename Comparable>
+//  void Graph<Comparable>::PrintGraph() {
+//    for(auto & entry : vertices_) {
+//        std::cout << "Vertex: " << entry.first;
+//        std::cout << " Indegree: " << entry.second.indegree_ << std::endl;
+//    }
+//  }
+
 
   template <typename Comparable>
   bool Graph<Comparable>::Insert( const Comparable& label ) {
@@ -37,15 +36,21 @@ namespace graphproject {
   bool Graph<Comparable>::InsertInAdjList( const Comparable& current_index,
             const Comparable& list_index, double dist ) {
 
+    // insert connected vertex if not aleady in graph
+    Insert( list_index );
+
     //list index vertex already in current index adjacency map,
     //or current index not in map, return false
     auto itr = vertices_.find( current_index );
     if( AreConnected( current_index, list_index ) || itr == vertices_.end() ) {
       return false;
     }
+
     // insert label of connected vertex and distance of edge
     // connecting current_index, return true
     itr->second.adj_.insert( std::pair<Comparable, double> (list_index, dist) );
+    //increase indegree of list index, used for TopologicalSort
+    ++vertices_.find( list_index )->second.indegree_;
     return true;
   }
 
@@ -65,10 +70,6 @@ namespace graphproject {
 
         while( parser >> list_index >> distance ) {
           InsertInAdjList( current_index, list_index, distance );
-
-          //increase indegree of each vertex added to adjacency list
-          //used for TopologicalSort
-          ++vertices_.find( list_index )->second.indegree_;
         }
       }
       file.close();
@@ -162,7 +163,7 @@ namespace graphproject {
     std::queue<Vertex*> q;
     std::queue<Comparable> sort_queue;
 
-    int counter = 0;
+    unsigned int counter = 0;
     //push all vertices with indegree 0 to queue
     for( auto & vertex : vertices_ ) {
       if( vertex.second.indegree_ == 0 ) {
@@ -186,6 +187,8 @@ namespace graphproject {
          }
       }
     }
+    std::cout << "Counter: " << counter << std::endl;
+    std::cout << "Size: " << vertices_.size() << std::endl;
     if(counter != vertices_.size()) {
       std::cout << "Cycle found\n";
     }
